@@ -1,0 +1,30 @@
+
+import java.util.List;
+// File: Authentication.java
+public class Authentication {
+
+    public static boolean validateSignUp(User user) {
+        if (Database.emailExists(user.getEmail())) {
+            return false;
+        }
+        Database.saveUser(user);
+        return true;
+    }
+
+    public static boolean validateSignIn(String email, String password) {
+        return Database.loadUsers().stream()
+            .anyMatch(u -> u.getEmail().equals(email) && u.getPassword().equals(password));
+    }
+
+    public static boolean resetPassword(String email, String newPassword) {
+        List<User> users = Database.loadUsers();
+        for (User user : users) {
+            if (user.getEmail().equals(email)) {
+                user.setPassword(newPassword);
+                Database.saveUsers(users);
+                return true;
+            }
+        }
+        return false;
+    }
+}
