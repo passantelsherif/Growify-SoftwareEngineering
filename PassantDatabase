@@ -1,0 +1,68 @@
+import java.io.*;
+import java.util.*;
+// File: Database.java
+public class Database {
+    private static final String USER_FILE = "users.ser";
+    private static final String ASSET_FILE = "assets.ser";
+    private static final String INVESTMENT_FILE = "investments.ser";
+
+    public static void saveUser(User user) {
+        List<User> users = loadUsers();
+        users.add(user);
+        saveUsers(users);
+    }
+
+    public static void saveUsers(List<User> users) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(USER_FILE))) {
+            oos.writeObject(users);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<User> loadUsers() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(USER_FILE))) {
+            return (List<User>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public static boolean emailExists(String email) {
+        return loadUsers().stream().anyMatch(user -> user.getEmail().equals(email));
+    }
+    public static void saveAssets(List<Asset> assets) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(ASSET_FILE))) {
+            oos.writeObject(assets);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static List<Asset> loadAssets() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ASSET_FILE))) {
+            return (List<Asset>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return new ArrayList<>();
+        }
+    }
+    
+    public static void saveInvestments(List<Investment> investments) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(INVESTMENT_FILE))) {
+            oos.writeObject(investments);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static List<Investment> loadInvestments() {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(INVESTMENT_FILE))) {
+            return (List<Investment>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return new ArrayList<>();
+        }
+    }
+}
