@@ -1,0 +1,20 @@
+import java.util.List;
+
+public class ZakatCalculator {
+
+    private static final double ZAKAT_RATE = 0.025; // 2.5% zakat rate
+
+    public static double calculateZakat(List<Asset> assets, List<Investment> investments) {
+        double totalZakatableAmount = 0;
+
+        for (Asset asset : assets) {
+            totalZakatableAmount += asset.getValue();
+        }
+
+        for (Investment investment : investments) {
+            totalZakatableAmount += investment.getAmount();
+        }
+
+        return totalZakatableAmount * ZAKAT_RATE;
+    }
+}
