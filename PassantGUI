@@ -1,0 +1,158 @@
+import java.util.List;
+import javax.swing.*;
+import java.awt.*;
+
+// File: LoginGUI.java
+class LoginGUI {
+
+    private JFrame frame;
+
+    public void createAndShowGUI() {
+        frame = new JFrame("Login System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 400);
+
+        JPanel panel = new JPanel(new GridLayout(6, 1, 10, 10));
+
+        JButton signUpButton = new JButton("Sign Up");
+        JButton signInButton = new JButton("Sign In");
+        JButton resetPasswordButton = new JButton("Reset Password");
+        JButton manageAssetsButton = new JButton("Manage Assets");
+        JButton manageInvestmentsButton = new JButton("Manage Investments");
+        JButton zakatButton = new JButton("Zakat Calculation");
+        JButton exitButton = new JButton("Exit");
+
+        signUpButton.addActionListener(e -> signUp());
+        signInButton.addActionListener(e -> signIn());
+        resetPasswordButton.addActionListener(e -> resetPassword());
+        manageAssetsButton.addActionListener(e -> manageAssets());
+        manageInvestmentsButton.addActionListener(e -> manageInvestments());
+        zakatButton.addActionListener(e -> calculateZakat());
+        exitButton.addActionListener(e -> System.exit(0));
+
+        panel.add(signUpButton);
+        panel.add(signInButton);
+        panel.add(resetPasswordButton);
+        panel.add(manageAssetsButton);
+        panel.add(manageInvestmentsButton);
+        panel.add(zakatButton);
+        panel.add(exitButton);
+
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+
+    private void signUp() {
+        JTextField nameField = new JTextField();
+        JTextField emailField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+
+        Object[] message = {
+            "Name:", nameField,
+            "Email:", emailField,
+            "Password:", passwordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(frame, message, "Sign Up", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String name = nameField.getText();
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+
+            User user = new User(email, password, name);
+            if (Authentication.validateSignUp(user)) {
+                JOptionPane.showMessageDialog(frame, "Sign-up successful!");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Email already registered.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void signIn() {
+        JTextField emailField = new JTextField();
+        JPasswordField passwordField = new JPasswordField();
+
+        Object[] message = {
+            "Email:", emailField,
+            "Password:", passwordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(frame, message, "Sign In", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String email = emailField.getText();
+            String password = new String(passwordField.getPassword());
+
+            if (Authentication.validateSignIn(email, password)) {
+                JOptionPane.showMessageDialog(frame, "Login successful! Welcome.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Invalid credentials.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void resetPassword() {
+        JTextField emailField = new JTextField();
+        JPasswordField newPasswordField = new JPasswordField();
+
+        Object[] message = {
+            "Email:", emailField,
+            "New Password:", newPasswordField
+        };
+
+        int option = JOptionPane.showConfirmDialog(frame, message, "Reset Password", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String email = emailField.getText();
+            String newPassword = new String(newPasswordField.getPassword());
+
+            if (Authentication.resetPassword(email, newPassword)) {
+                JOptionPane.showMessageDialog(frame, "Password reset successful.");
+            } else {
+                JOptionPane.showMessageDialog(frame, "Email not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    private void manageAssets() {
+        JTextArea assetsArea = new JTextArea(10, 30);
+        assetsArea.setText(Database.loadAssets().toString());
+        JScrollPane scrollPane = new JScrollPane(assetsArea);
+
+        int option = JOptionPane.showConfirmDialog(frame, scrollPane, "Manage Assets", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            // Add logic for editing and saving assets
+        }
+    }
+
+    private void manageInvestments() {
+        JTextArea investmentsArea = new JTextArea(10, 30);
+        investmentsArea.setText(Database.loadInvestments().toString());
+        JScrollPane scrollPane = new JScrollPane(investmentsArea);
+
+        int option = JOptionPane.showConfirmDialog(frame, scrollPane, "Manage Investments", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            // Add logic for editing and saving investments
+        }
+    }
+    private void calculateZakat() {
+        List<Asset> assets = Database.loadAssets();
+        List<Investment> investments = Database.loadInvestments();
+    
+        double zakatAmount = ZakatCalculator.calculateZakat(assets, investments);
+    
+        JTextArea zakatDetails = new JTextArea(10, 30);
+        zakatDetails.setText("Zakat Calculation:\n");
+        zakatDetails.append("Assets:\n");
+        for (Asset asset : assets) {
+            zakatDetails.append(asset.toString() + "\n");
+        }
+    
+        zakatDetails.append("\nInvestments:\n");
+        for (Investment investment : investments) {
+            zakatDetails.append(investment.toString() + "\n");
+        }
+    
+        zakatDetails.append("\nTotal Zakat Due: " + zakatAmount);
+    
+        JScrollPane scrollPane = new JScrollPane(zakatDetails);
+        JOptionPane.showMessageDialog(frame, scrollPane, "Zakat Calculation", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
