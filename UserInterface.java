@@ -46,6 +46,10 @@ public class UserInterface {
         new RemoveAssetForm();
     }
 
+    public static void DisplayZakatPage() {
+        new ZakatCalculationForm();
+    }
+
 
     //Start page
     static class Start extends JFrame {
@@ -174,6 +178,7 @@ public class UserInterface {
                 } else {
 
                     if (Authentication.validateCredentialsSignIn(email, password)) {
+                        Zakat.currentUserEmail = email;
                         showSuccessfulMsg("You Signed In successfully!..Welcome to Growify!");
                         UserInterface.DisplayDashboardPage();
                     } else {
@@ -277,7 +282,7 @@ public class UserInterface {
             add(Zakat_compliance);
 
             InvestmentDashboard.addActionListener(e -> UserInterface.DisplayInvestmentDashboardPage());
-
+            Zakat_compliance.addActionListener(e -> UserInterface.DisplayZakatPage());
             setVisible(true);
         }
     }
@@ -364,7 +369,7 @@ public class UserInterface {
                 String date = dateField.getText().trim();
                 String price = priceField.getText().trim();
 
-                boolean success = Database.insertAsset(type, name, quantity, date, price);
+                boolean success = Database.insertAsset(type, name, quantity, date, price, Zakat.currentUserEmail);
                 if (success) {
                     JOptionPane.showMessageDialog(this, "Asset added successfully.");
                     dispose();
@@ -486,7 +491,40 @@ public class UserInterface {
         }
     }
 
+    //Calculate Zakat GUI
+    public static class ZakatCalculationForm extends JFrame {
 
+        private JButton calculateButton;
 
+        public ZakatCalculationForm() {
+            setTitle("Growify - Zakat Calculator");
+            setSize(400, 200);
+            setLayout(new GridLayout(3, 1));
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            JLabel infoLabel = new JLabel("Click to calculate your Zakat (2.5% of your assets)", SwingConstants.CENTER);
+            calculateButton = new JButton("Calculate Zakat");
+
+            // Add components to frame
+            add(infoLabel);
+            add(calculateButton);
+
+            // Calculation logic
+            calculateButton.addActionListener(e -> {
+                if (Zakat.currentUserEmail == null) {
+                    JOptionPane.showMessageDialog(this, "Please log in first.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                double zakatAmount = Zakat.calculateZakat(Zakat.currentUserEmail);
+                JOptionPane.showMessageDialog(this,
+                        "Your calculated Zakat is: " + zakatAmount + " EGP",
+                        "Zakat Result",
+                        JOptionPane.INFORMATION_MESSAGE);
+            });
+
+            setVisible(true);
+        }
+    }
 
 }
