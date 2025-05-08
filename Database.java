@@ -26,9 +26,9 @@ public class Database {
     }
 
     // --- Method to Insert Asset --- //
-    public static boolean insertAsset(String type, String name, String quantity, String date, String price) {
+    public static boolean insertAsset(String type, String name, String quantity, String date, String price ,  String userEmail ) {
         List<Asset> assets = loadAssets();
-        Asset newAsset = new Asset(type, name, quantity, date, price);
+        Asset newAsset = new Asset(type, name, quantity, date, price , userEmail);
         assets.add(newAsset);
         return saveAssets(assets);
     }
@@ -98,6 +98,26 @@ public class Database {
                 System.out.println("Email  : " + user.getEmail());
                 System.out.println("Pass   : " + user.getPassword());
                 System.out.println("Phone   : " + user.getPhone());
+                System.out.println("-------------------------------");
+            }
+        }
+    }
+
+    public static void printAllAssets() {
+        List<Asset> assets = loadAssets();
+
+        if (assets.isEmpty()) {
+            System.out.println("No assets found in the file.");
+        } else {
+            System.out.println("----- All Registered assets -----");
+            for (Asset asset : assets) {
+                System.out.println("type   : " + asset.getType());
+                System.out.println("name  : " + asset.getName());
+                System.out.println("quantity   : " + asset.getQuantity());
+                System.out.println("date   : " + asset.getDate());
+                System.out.println("price   : " + asset.getPrice());
+                System.out.println("email   : " + asset.getUserEmail());
+
                 System.out.println("-------------------------------");
             }
         }
