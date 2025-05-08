@@ -7,13 +7,16 @@ public class Asset implements Serializable {
     private String quantity;
     private String date;
     private String price;
+    private String UserEmail;
 
-    public Asset(String type, String name, String quantity, String date, String price) {
+
+    public Asset(String type, String name, String quantity, String date, String price , String UserEmail) {
         this.type = type;
         this.name = name;
         this.quantity = quantity;
         this.date = date;
         this.price = price;
+        this.UserEmail = UserEmail;
     }
 
     // Setter methods to modify asset properties
@@ -92,6 +95,8 @@ public class Asset implements Serializable {
     public String getPrice() {
         return price;
     }
+
+    public String getUserEmail() {return UserEmail;}
 
     // Optional: toString() for display
     @Override
