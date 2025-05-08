@@ -1,0 +1,107 @@
+import java.io.Serializable;
+import java.util.List;
+
+public class Asset implements Serializable {
+    private String type;
+    private String name;
+    private String quantity;
+    private String date;
+    private String price;
+
+    public Asset(String type, String name, String quantity, String date, String price) {
+        this.type = type;
+        this.name = name;
+        this.quantity = quantity;
+        this.date = date;
+        this.price = price;
+    }
+
+    // Setter methods to modify asset properties
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    // Method to edit an existing asset
+    public static boolean editAsset(String originalName, String newType, String newName, String newQuantity, String newDate, String newPrice) {
+        List<Asset> assets = Database.loadAssets();
+        for (Asset asset : assets) {
+            if (asset.getName().equalsIgnoreCase(originalName)) {
+                // Update the asset's properties using setters
+                asset.setType(newType);
+                asset.setName(newName);
+                asset.setQuantity(newQuantity);
+                asset.setDate(newDate);
+                asset.setPrice(newPrice);
+                return Database.saveAssets(assets); // Save the updated list
+            }
+        }
+        return false; // Return false if no matching asset is found
+    }
+
+    // Method to remove an asset
+    public static boolean removeAsset(String nameToRemove) {
+        List<Asset> assets = Database.loadAssets();
+        boolean removed = assets.removeIf(asset -> asset.getName().equals(nameToRemove));
+        return removed && Database.saveAssets(assets);
+    }
+
+    // Method to find an asset by its name
+    public static Asset findAssetByName(String originalName) {
+        List<Asset> assets = Database.loadAssets();
+        for (Asset asset : assets) {
+            if (asset.getName().equalsIgnoreCase(originalName)) {
+                return asset;
+            }
+        }
+        return null; // Return null if no asset is found with the given name
+    }
+
+    // Getters for asset properties
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    // Optional: toString() for display
+    @Override
+    public String toString() {
+        return "Asset{" +
+                "type='" + type + '\'' +
+                ", name='" + name + '\'' +
+                ", quantity='" + quantity + '\'' +
+                ", date='" + date + '\'' +
+                ", price='" + price + '\'' +
+                '}';
+    }
+}
