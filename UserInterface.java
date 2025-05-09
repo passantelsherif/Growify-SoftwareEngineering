@@ -574,10 +574,9 @@ public class UserInterface {
                 String reportText = Report.UserAssetsReport(); // Get the report
                 reportArea.setText(reportText);               // Show in GUI
             });
-
-
             setVisible(true);
         }
     }
 
+    
 }
