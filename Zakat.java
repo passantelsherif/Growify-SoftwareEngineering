@@ -1,9 +1,9 @@
 import java.util.List;
 
-public class Zakat {
+public class Zakat extends MainMenu {
     public static String currentUserEmail = null;
 
-    private static final double ZAKAT_PERCENTAGE= 0.025; // 2.5%
+    private static final double ZAKAT_PERCENTAGE = 0.025; // 2.5%
 
     // Calculate zakat for a user based on their assets
     public static double calculateZakat(String email) {
@@ -11,7 +11,7 @@ public class Zakat {
         double totalZakatableValue = 0.0;
 
         for (Asset asset : allAssets) {
-            if (currentUserEmail.equals(email)) { // assuming this field exists
+            if (asset.getUserEmail().equals(currentUserEmail)) {
                 try {
                     double value = Double.parseDouble(asset.getPrice());
                     totalZakatableValue += value;
@@ -22,5 +22,22 @@ public class Zakat {
         }
 
         return totalZakatableValue * ZAKAT_PERCENTAGE;
+    }
+
+    // Implement abstract methods from MainMenu
+    @Override
+    public void openPage() {
+        System.out.println("Zakat calculation page opened.");
+        if (currentUserEmail == null) {
+            System.out.println("Please log in first.");
+        } else {
+            double zakatAmount = calculateZakat(currentUserEmail);
+            System.out.println("Your calculated Zakat is: " + zakatAmount + " EGP");
+        }
+    }
+
+    @Override
+    public void closePage() {
+        System.out.println("Zakat calculation page closed.");
     }
 }
