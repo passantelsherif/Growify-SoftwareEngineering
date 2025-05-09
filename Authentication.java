@@ -37,7 +37,7 @@ public class Authentication {
         boolean updated = false;
 
         for (User user : users) {
-            if (user.getEmail().equals(email)) {
+            if (user.getEmail().equals(email)) {  // Correct check here
                 user.setPassword(newPassword);
                 updated = true;
                 break;
@@ -51,6 +51,7 @@ public class Authentication {
             return false; // Email not found
         }
     }
+
 
 
 }
