@@ -50,6 +50,10 @@ public class UserInterface {
         new ZakatCalculationForm();
     }
 
+    public static void ReportPage() {
+        new ReportForm() ;
+    }
+
 
     //Start page
     static class Start extends JFrame {
@@ -283,6 +287,8 @@ public class UserInterface {
 
             InvestmentDashboard.addActionListener(e -> UserInterface.DisplayInvestmentDashboardPage());
             Zakat_compliance.addActionListener(e -> UserInterface.DisplayZakatPage());
+            ReportInsight.addActionListener(e -> UserInterface.ReportPage());
+
             setVisible(true);
         }
     }
@@ -353,7 +359,7 @@ public class UserInterface {
             add(new JLabel("Quantity:"));
             add(quantityField);
 
-            add(new JLabel("Date (YYYY-MM-DD):"));
+            add(new JLabel("Date (DD/MM/YYYY):"));
             add(dateField);
 
             add(new JLabel("Price:"));
@@ -369,12 +375,19 @@ public class UserInterface {
                 String date = dateField.getText().trim();
                 String price = priceField.getText().trim();
 
+                if (type.isEmpty() || name.isEmpty() || quantity.isEmpty() || date.isEmpty() || price.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 boolean success = Database.insertAsset(type, name, quantity, date, price, Zakat.currentUserEmail);
                 if (success) {
                     JOptionPane.showMessageDialog(this, "Asset added successfully.");
                     dispose();
+                    UserInterface.DisplayDashboardPage();
+
                 } else {
-                    JOptionPane.showMessageDialog(this, "Failed to add asset.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Name already exists please try another name.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
 
@@ -436,12 +449,18 @@ public class UserInterface {
                 String newDate = dateField.getText().trim();
                 String newPrice = priceField.getText().trim();
 
+                if (newType.isEmpty() || newName.isEmpty() || newQuantity.isEmpty() || newDate.isEmpty() || newPrice.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Please fill all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 boolean updated = Asset.editAsset(originalName, newType, newName, newQuantity, newDate, newPrice);
                 if (updated) {
                     JOptionPane.showMessageDialog(this, "Asset updated successfully.");
                     dispose();
+                    UserInterface.DisplayDashboardPage();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Failed to update asset.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Name already exists please try another name.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             });
 
@@ -482,6 +501,7 @@ public class UserInterface {
                 if (removed) {
                     JOptionPane.showMessageDialog(this, "Asset removed successfully.");
                     dispose();
+                    UserInterface.DisplayDashboardPage();
                 } else {
                     JOptionPane.showMessageDialog(this, "Asset not found or failed to remove.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -517,11 +537,44 @@ public class UserInterface {
                 }
 
                 double zakatAmount = Zakat.calculateZakat(Zakat.currentUserEmail);
-                JOptionPane.showMessageDialog(this,
-                        "Your calculated Zakat is: " + zakatAmount + " EGP",
-                        "Zakat Result",
-                        JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Your calculated Zakat is: " + zakatAmount + " EGP", "Zakat Result", JOptionPane.INFORMATION_MESSAGE);
+                UserInterface.DisplayDashboardPage();
             });
+
+            setVisible(true);
+        }
+    }
+
+    //Report GUI
+    public static class ReportForm extends JFrame {
+
+        private JTextArea reportArea;
+        private JButton refreshButton;
+
+        public ReportForm() {
+            setTitle("Growify - Asset Report");
+            setSize(500, 400);
+            setLayout(new BorderLayout());
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            // Instructions
+            JLabel titleLabel = new JLabel("Your Asset Report", SwingConstants.CENTER);
+
+            // Text area to show report
+            reportArea = new JTextArea();
+            reportArea.setEditable(false);
+            JScrollPane scrollPane = new JScrollPane(reportArea);
+            add(scrollPane, BorderLayout.CENTER);
+
+            // Refresh button
+            refreshButton = new JButton("Refresh Report");
+            add(refreshButton, BorderLayout.SOUTH);
+
+            refreshButton.addActionListener(e -> {
+                String reportText = Report.UserAssetsReport(); // Get the report
+                reportArea.setText(reportText);               // Show in GUI
+            });
+
 
             setVisible(true);
         }
