@@ -1,6 +1,6 @@
-==========================
+
 Growify - Investment Management Software
-==========================
+
 
 **Description:**
 Growify is a desktop application designed to help users manage their investments, calculate Zakat (charitable donation), and generate detailed reports. The program provides a user-friendly interface for adding, editing, and removing assets, as well as viewing investment dashboards and calculating Zakat.
